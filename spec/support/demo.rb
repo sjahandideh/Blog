@@ -4,9 +4,6 @@ module Demo
   attr_accessor :last_step
 
   def demo_step description, args={}
-    #set_speed(args[:speed].to_sym) if args[:speed]
-    #visiting_page = args[:starting_page] || homepage
-    #visit visiting_page
     if demo?
       page.execute_script %{
         $("body").prepend("<div id='step' style='font-size: 2em' class='alert alert-info'>#{description}<button style='margin-left:15px' onclick='$(this).parent().hide()'>Go</button></div>");
@@ -32,6 +29,13 @@ module Demo
   def demo?
     example.metadata[:demo]
   end
+
+  def set_speed(speed)
+    begin
+      page.driver.browser.send(:bridge).speed=speed
+    rescue
+    end
+  end
 end
 
 RSpec.configuration.include Demo
@@ -40,7 +44,7 @@ RSpec.configure do |config|
   config.before :each do
     if demo?
       Capybara.current_driver = :selenium
-      #set_speed(:medium)
+      set_speed(:slow)
       visit '/'
       demo_step(example.description, { :title => true })
     end
@@ -48,9 +52,27 @@ RSpec.configure do |config|
 
   config.after :each do
     if demo?
-      demo_step 'All done, thanks for watching!'
       Capybara.use_default_driver
-      #set_speed(:fast)
+      set_speed(:medium)
+    end
+  end
+end
+
+module Selenium::WebDriver::Firefox
+  class Bridge
+    attr_accessor :speed
+
+    def execute(*args)
+      result = raw_execute(*args)['value']
+      case speed
+        when :slow
+          sleep 0.3
+        when :medium
+          sleep 0.1
+        when :fast
+          sleep 0.05
+      end
+      result
     end
   end
 end

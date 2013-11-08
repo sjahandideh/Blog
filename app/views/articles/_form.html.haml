@@ -4,7 +4,7 @@
   .form-inputs
     = f.input :title
     = f.input :content
-    = f.input :author_id, collection: User.all, label_method: :name, value_method: :id, include_blank: false
+    = f.input :author_id, collection: User.all, label_method: :name, value_method: :id, prompt: "Select Author"
 
   .form-actions
     = f.button :submit
