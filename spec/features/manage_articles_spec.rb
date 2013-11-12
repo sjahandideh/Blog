@@ -3,13 +3,12 @@ require "spec_helper"
 feature "Managing Articles", js: true, demo: true do
   before :each do
     Capybara.default_wait_time = 80
+    rake 'seed:users'
+    User.count.should == 3
+    rake 'seed:sample_article'
   end
 
   scenario "Adding a new article" do
-    rake 'seed:users'
-    User.count.should == 3
-
-    rake 'seed:sample_article'
     visit '/articles'
 
     demo_step "Creating a new article"
