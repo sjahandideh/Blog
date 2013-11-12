@@ -1,23 +1,7 @@
-%h1 Listing articles
+.top
+  = link_to 'New Article', new_article_path, class: 'btn btn-warning pull-right'
 
-%table
-  %tr
-    %th Title
-    %th Content
-    %th Author
-    %th
-    %th
-    %th
-
-  - @articles.each do |article|
-    %tr
-      %td= article.title
-      %td= article.content
-      %td= article.author
-      %td= link_to 'Show', article
-      %td= link_to 'Edit', edit_article_path(article)
-      %td= link_to 'Destroy', article, :method => :delete, :data => { :confirm => 'Are you sure?' }
-
-%br
-
-= link_to 'New Article', new_article_path
+- @articles.each do |article|
+  %h4=  article.title
+  %p=   article.content
+  %h5=  article.author.name

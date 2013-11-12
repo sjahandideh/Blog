@@ -6,7 +6,7 @@ module Demo
   def demo_step description, args={}
     if demo?
       page.execute_script %{
-        $("body").prepend("<div id='step' style='font-size: 2em' class='alert alert-info'>#{description}<button style='margin-left:15px' onclick='$(this).parent().hide()'>Go</button></div>");
+        $("body").prepend("<div id='step' style='font-size: 2em' class='alert alert-info'>#{description}<button style='margin-left:15px' class='btn btn-info' onclick='$(this).parent().hide()'>Next</button></div>");
       }
       page.execute_script %{
         $("body").prepend("<div id='last-step' style='font-size: 2em' class='alert'>#{last_step} #{TICK}</div>");
@@ -46,12 +46,13 @@ RSpec.configure do |config|
       Capybara.current_driver = :selenium
       set_speed(:slow)
       visit '/'
-      demo_step(example.description, { :title => true })
+      demo_step("Scenario: #{example.description}", { :title => true })
     end
   end
 
   config.after :each do
     if demo?
+      demo_step("Finished. Thanks!", { :title => true })
       Capybara.use_default_driver
       set_speed(:medium)
     end
